@@ -1,0 +1,51 @@
+name: PrisonControl
+version: 1.0
+main: me.number1_Master.PrisonControl.PrisonControl
+description: PrisonControl allows you to control Prison Servers like no other plugins!
+author: number1_Master / number1Master
+commands:
+    prisoncontrol:
+        description: General command for PrisonControl
+        aliases: pc
+        usage: |
+            If you see this message, that means
+            something is wrong! You must contact
+            number1_Master as soon as possible!
+permissions:
+     prisoncontrol.command.*:
+        description: Allows you to type all PrisonControl commands!
+        children:
+           prisoncontrol.command.setspawn: true
+           prisoncontrol.command.delspawn: true
+           prisoncontrol.command.spawn: true
+           prisoncontrol.command.addowner: true
+           prisoncontrol.command.protect: true
+     prisoncontrol.command.setspawn:
+         description: Allows you to set spawn points for cells!
+         default: op
+     prisoncontrol.command.delspawn:
+         description: Allows you to delete spawn points for cells!
+         default: op
+     prisoncontrol.command.spawn:
+         description: Allows you to teleport to spawn points!
+         default: op
+     prisoncontrol.command.addowner:
+         description: Allows you to add owners for spawn points!
+         default: op
+     prisoncontrol.command.region:
+         description: Allows you to create protection regions!
+         default: op
+     prisoncontrol.sign.*:
+        description: Allows you to create and break all Cell Information signs!
+        children:
+           prisoncontrol.sign.break: true
+           prisoncontrol.sign.create: true
+     prisoncontrol.sign.break:
+         description: Allows you to break Cell Information signs!
+         default: op
+     prisoncontrol.sign.create:
+         description: Allows you to break Cell Information signs!
+         default: op
+     prisoncontrol.reload:
+         description: Allows you to reload PrisonControl configurations!
+         default: op
