@@ -35,6 +35,14 @@ public class PrisonSpawn
 	public String toString()
 	{ return world + " " + x + " " + y + " " + z; }
 	
+	public static String toString(Location loc)
+	{ 
+		return loc.getWorld().getName() + " " + 
+				Math.round(loc.getY()) + " " + 
+				Math.round(loc.getY()) + " " + 
+				Math.round(loc.getZ());
+		}
+	
 	public static Location toLocation(String location)
 	{
 		String[] loc = location.split(" ");

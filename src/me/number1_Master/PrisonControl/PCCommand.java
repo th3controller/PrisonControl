@@ -1,4 +1,4 @@
-package me.number1_Master.PrisonControl.Commands;
+package me.number1_Master.PrisonControl;
 
 import java.util.ArrayList;
 
@@ -25,6 +25,7 @@ public class PCCommand implements CommandExecutor
 		String arg2 = (args.length > 1) ? args[1] : "";
 		String arg3 = (args.length > 2) ? args[2] : "";
 		String arg4 = (args.length > 3) ? args[3] : "";
+		String arg5 = (args.length > 4) ? args[4] : "";
 		
 		// Check if the sender is a Player.
 		Player player = (sender instanceof Player) ? (Player) sender : null;
@@ -32,7 +33,7 @@ public class PCCommand implements CommandExecutor
 		
 		if(arg1.equals("reload"))
 		{
-			if(!(Utils.hasPermission(sender, "prisoncontrol.reload"))) return true;
+			if(!(Utils.hasPermission(sender, "prisoncontrol.command.reload"))) return true;
 			
 			// /pc reload
 			if(arg2.equals(""))
@@ -51,7 +52,7 @@ public class PCCommand implements CommandExecutor
 		}
 		
 		/*								*
-		 * 	Handles /pc setspawn [name]	*
+		 * 	Handles /pc setspawn <name>	*
 		 *								*/
 		else if(player != null && arg1.equals("setspawn"))
 		{
@@ -86,7 +87,7 @@ public class PCCommand implements CommandExecutor
 		}
 		
 		/*								*
-		 * 	Handles /pc delspawn [name]	*
+		 * 	Handles /pc delspawn <name>	*
 		 *								*/
 		else if(arg1.equals("delspawn"))
 		{
@@ -125,43 +126,8 @@ public class PCCommand implements CommandExecutor
 		}
 		
 		/*								*
-		 * 	Handles /pc spawn [name]		*
+		 * 	Handles /pc addowner <name>	*
 		 *								*/
-		else if(player != null && arg1.equals("spawn"))
-		{
-			if(!(Utils.hasPermission(player, "prisoncontrol.command.spawn"))) return true;
-			
-			if(arg2.equals(""))
-			{
-				sender.sendMessage(prefix + "Not enough arguments!");
-				return true;
-			}
-			else if(arg3.equals(""))
-			{
-				// /pc spawn overflow
-				if(arg2.equalsIgnoreCase("overflow"))
-				{
-					player.teleport(PrisonSpawn.toLocation(Config.getString("Prison.Spawn.Overflow")));
-					sender.sendMessage(prefix + "Teleported to Overflow spawn!");
-					return true;
-				}
-				
-				// /pc spawn <spawn>
-				if(Config.isSet("Prison.Spawns." + arg2))
-				{
-					player.teleport(PrisonSpawn.toLocation(Config.getString("Prison.Spawns." + arg2 + ".Spawn Location")));
-					player.sendMessage(prefix + "Teleported to Spawn " + arg2 + "!");
-				}
-				else sender.sendMessage(prefix + "Spawn " + arg2 + " does not exist!");
-				return true;
-			}
-			else
-			{
-				sender.sendMessage(prefix + "Too many arguments!");
-				return true;
-			}
-		}
-		
 		else if(arg1.equals("addowner"))
 		{
 			if(!(Utils.hasPermission(sender, "prisoncontrol.command.addowner"))) return true;
@@ -202,6 +168,47 @@ public class PCCommand implements CommandExecutor
 			}
 		}
 		
+		/*							*
+		 * 	Handles /pc spawn <name>	*
+		 *							*/
+		else if(player != null && arg1.equals("spawn"))
+		{
+			if(!(Utils.hasPermission(player, "prisoncontrol.command.spawn"))) return true;
+			
+			if(arg2.equals(""))
+			{
+				sender.sendMessage(prefix + "Not enough arguments!");
+				return true;
+			}
+			else if(arg3.equals(""))
+			{
+				// /pc spawn overflow
+				if(arg2.equalsIgnoreCase("overflow"))
+				{
+					player.teleport(PrisonSpawn.toLocation(Config.getString("Prison.Spawn.Overflow")));
+					sender.sendMessage(prefix + "Teleported to Overflow spawn!");
+					return true;
+				}
+				
+				// /pc spawn <spawn>
+				if(Config.isSet("Prison.Spawns." + arg2))
+				{
+					player.teleport(PrisonSpawn.toLocation(Config.getString("Prison.Spawns." + arg2 + ".Spawn Location")));
+					player.sendMessage(prefix + "Teleported to Spawn " + arg2 + "!");
+				}
+				else sender.sendMessage(prefix + "Spawn " + arg2 + " does not exist!");
+				return true;
+			}
+			else
+			{
+				sender.sendMessage(prefix + "Too many arguments!");
+				return true;
+			}
+		}
+		
+		/*											*
+		 * 	Handles /pc region <regionname> <action>	*
+		 *											*/
 		else if(player != null && arg1.equals("region"))
 		{
 			if(arg2.equals("") || arg3.equals(""))
@@ -210,11 +217,17 @@ public class PCCommand implements CommandExecutor
 				return true;
 			}
 			
-			// /pc region <regionname> <p1|p2>
+			// /pc region <regionname> < p1 | p2 | hpos1 | hpos2 | del >
 			else if(arg4.equals(""))
 			{
 				if(!(Regions.isSet("Regions." + arg2)))
 				{
+					if(arg3.equalsIgnoreCase("del"))
+					{
+						player.sendMessage(prefix + "Region " + arg3 + " does not exist!");
+						return true;
+					}
+					
 					Regions.createSection("Regions." + arg2 + ".P1", "");
 					Regions.createSection("Regions." + arg2 + ".P2", "");
 					Regions.createSection("Regions." + arg2 + ".Place.Allowed", new ArrayList<String>());
@@ -223,15 +236,101 @@ public class PCCommand implements CommandExecutor
 					Regions.createSection("Regions." + arg2 + ".Break.Blocked", new ArrayList<String>());
 				}
 				
-				if(arg3.equals("p1")) Regions.set("Regions." + arg2 + ".P1", loc.toString());
-				else if(arg3.equals("p2")) Regions.set("Regions." + arg2 + ".P2", loc.toString());
+				if((arg3.equalsIgnoreCase("p1") || arg3.equalsIgnoreCase("p2")) && 
+						!(Utils.hasPermission(player, "prisoncontrol.command.region.p")))
+					return true;
+				else if((arg3.equalsIgnoreCase("hpos1") || arg3.equalsIgnoreCase("hpos2")) && 
+						!(Utils.hasPermission(player, "prisoncontrol.command.region.hpos")))
+					return true;
+				else if(arg3.equalsIgnoreCase("del") && !(Utils.hasPermission(player, "prisoncontrol.command.region.del")))
+					return true;
+				
+				PrisonSpawn hLoc = new PrisonSpawn(player.getTargetBlock(null, 50).getLocation());
+				
+				if(arg3.equalsIgnoreCase("p1")) Regions.set("Regions." + arg2 + ".P1", loc.toString());
+				else if(arg3.equalsIgnoreCase("p2")) Regions.set("Regions." + arg2 + ".P2", loc.toString());
+				else if(arg3.equalsIgnoreCase("hpos1")) Regions.set("Regions." + arg2 + ".P1", hLoc.toString());
+				else if(arg3.equalsIgnoreCase("hpos2")) Regions.set("Regions." + arg2 + ".P2", hLoc.toString());
+				else if(arg3.equalsIgnoreCase("del")) Regions.set("Regions." + arg2, null);
 				else
 				{
-					player.sendMessage(prefix + "Unknown corner name! The corner must be labelled P1 or P2!");
+					player.sendMessage(prefix + "Unknown region action! Please consult command documentary on!");
 					return true;
 				}
-				player.sendMessage(prefix + "Corner for region " + arg2 + " is set!");
+				player.sendMessage(prefix + "Action completed!");
 				return true;
+			}
+			else if(arg5.equals(""))
+			{
+				if(!(Regions.isSet("Regions" + arg2)))
+				{
+					player.sendMessage(prefix + "That region does not exist!");
+					return true;
+				}
+				
+				int distance;
+				try
+				{ distance = Integer.parseInt(arg4); }
+				catch(NumberFormatException err)
+				{
+					player.sendMessage(prefix + "The expansion distance must be a number!");
+					return true;
+				}
+				
+				if((arg3.equalsIgnoreCase("out") || arg3.equalsIgnoreCase("raise") || arg3.equalsIgnoreCase("lower")) &&
+						!(Utils.hasPermission(player, "prisoncontrol.command.region.expand")))
+					return true;
+				
+				Location p1 = PrisonSpawn.toLocation(Regions.getString("Regions." + arg2 + ".P1"));
+				Location p2 = PrisonSpawn.toLocation(Regions.getString("Regions." + arg2 + ".P1"));
+				if(arg3.equalsIgnoreCase("out"))
+				{
+					p1.setX(p1.getX() + distance);
+					p1.setZ(p1.getZ() + distance);
+					p2.setX(p1.getX() + distance);
+					p2.setZ(p1.getZ() + distance);					
+					
+					Regions.set("Regions." + arg2 + ".P1", PrisonSpawn.toString(p1));
+					Regions.set("Regions." + arg2 + ".P2", PrisonSpawn.toString(p2));
+					
+					player.sendMessage(prefix + arg2 + " expanded " + arg4 + " blocks!");
+					return true;
+				}
+				else if(arg3.equalsIgnoreCase("raise"))
+				{
+					if(p1.getY() > p2.getY())
+					{
+						p1.setY(p1.getY() + distance);
+						Regions.set("Regions." + arg2 + ".P1", PrisonSpawn.toString(p1));
+					}
+					else
+					{
+						p2.setY(p2.getY() + distance);
+						Regions.set("Regions." + arg2 + ".P2", PrisonSpawn.toString(p1));
+					}
+					player.sendMessage(prefix + arg2 + " raised " + arg4 + " blocks!");
+					return true;
+				}
+				else if(arg3.equalsIgnoreCase("lower"))
+				{
+					if(p1.getY() < p2.getY())
+					{
+						p1.setY(p1.getY() - distance);
+						Regions.set("Regions." + arg2 + ".P1", PrisonSpawn.toString(p1));
+					}
+					else
+					{
+						p2.setY(p2.getY() + distance);
+						Regions.set("Regions." + arg2 + ".P2", PrisonSpawn.toString(p1));
+					}
+					player.sendMessage(prefix + arg2 + " lowered " + arg4 + " blocks!");
+					return true;
+				}
+				else
+				{
+					player.sendMessage(prefix + "Unknown region action! Please consult command documentary on!");
+					return true;
+				}
 			}
 			else
 			{
@@ -239,7 +338,6 @@ public class PCCommand implements CommandExecutor
 				return true;
 			}
 		}
-		
 		else if(player == null) sender.sendMessage(prefix + "You must be a player to execute that command!");
 		else player.sendMessage(prefix + "Unknown PrisonControl Command!");
 		return true;

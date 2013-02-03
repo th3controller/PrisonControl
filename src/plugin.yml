@@ -1,7 +1,7 @@
 name: PrisonControl
 version: 1.0
 main: me.number1_Master.PrisonControl.PrisonControl
-description: PrisonControl allows you to control Prison Servers like no other plugins!
+description: PrisonControl allows you to control Prison Servers like no other plugin!
 author: number1_Master / number1Master
 commands:
     prisoncontrol:
@@ -15,25 +15,45 @@ permissions:
      prisoncontrol.command.*:
         description: Allows you to type all PrisonControl commands!
         children:
+           prisoncontrol.command.reload: true
            prisoncontrol.command.setspawn: true
            prisoncontrol.command.delspawn: true
            prisoncontrol.command.spawn: true
            prisoncontrol.command.addowner: true
-           prisoncontrol.command.protect: true
+           prisoncontrol.command.region.*: true
+     prisoncontrol.command.reload:
+         description: Allows you to reload PrisonControl configurations!
+         default: op
      prisoncontrol.command.setspawn:
          description: Allows you to set spawn points for cells!
          default: op
      prisoncontrol.command.delspawn:
          description: Allows you to delete spawn points for cells!
          default: op
-     prisoncontrol.command.spawn:
-         description: Allows you to teleport to spawn points!
-         default: op
      prisoncontrol.command.addowner:
          description: Allows you to add owners for spawn points!
          default: op
-     prisoncontrol.command.region:
-         description: Allows you to create protection regions!
+     prisoncontrol.command.spawn:
+         description: Allows you to teleport to spawn points!
+         default: op
+     prisoncontrol.command.region.*:
+        description: Allows you to manage Prison regions in every possible way!
+        children:
+           prisoncontrol.command.region.p: true
+           prisoncontrol.command.region.hpos: true
+           prisoncontrol.command.region.expand: true
+           prisoncontrol.command.region.del: true
+     prisoncontrol.command.region.p:
+         description: Allows you to set a region's corners where you are standing!
+         default: op
+     prisoncontrol.command.region.hpos:
+         description: Allows you to set a region's corners where you are looking!
+         default: op
+     prisoncontrol.command.region.expand:
+         description: Allows you to expand a region up, down, or out!
+         default: op
+     prisoncontrol.command.region.del:
+         description: Allows you to delete a regions!
          default: op
      prisoncontrol.sign.*:
         description: Allows you to create and break all Cell Information signs!
@@ -45,7 +65,4 @@ permissions:
          default: op
      prisoncontrol.sign.create:
          description: Allows you to break Cell Information signs!
-         default: op
-     prisoncontrol.reload:
-         description: Allows you to reload PrisonControl configurations!
          default: op

@@ -34,7 +34,7 @@ public class BlockListener implements Listener
 			if(Config.isSet("Prison.Spawns." + line1))
 			{
 				new PrisonSpawn(e.getBlock().getLocation()).saveTo("Prison.Spawns." + line1 + ".Sign Location");
-				e.setLine(0, ChatColor.RED + "[Cell " + line1 + "]");
+				e.setLine(0, Utils.getPrimaryColor() + "[Cell " + line1 + "]");
 				player.sendMessage(prefix + "Cell successfully linked!");
 				return;
 			}

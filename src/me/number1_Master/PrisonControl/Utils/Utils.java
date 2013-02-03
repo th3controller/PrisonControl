@@ -8,8 +8,14 @@ import org.bukkit.command.*;
 
 public class Utils
 {
-	public static ChatColor b = ChatColor.BLUE;
-	public static ChatColor r = ChatColor.RED;
+	private static ChatColor b = ChatColor.BLUE;
+	private static ChatColor r = ChatColor.RED;
+	
+	public static ChatColor getPrimaryColor()
+	{ return b; }
+	
+	public static ChatColor getSecondaryColor()
+	{ return r; }
 	
 	private static String prefix = "[PrisonControl] ";
 	public static String getPrefix(boolean colorize)
@@ -17,6 +23,7 @@ public class Utils
 		if(colorize) return b + prefix + r;
 		else return prefix;
 	}
+	
 	
 	public static boolean hasPermission(CommandSender player, String permissionNode)
 	{

@@ -2,7 +2,6 @@ package me.number1_Master.PrisonControl;
 
 import java.io.File;
 
-import me.number1_Master.PrisonControl.Commands.PCCommand;
 import me.number1_Master.PrisonControl.Config.*;
 import me.number1_Master.PrisonControl.Listeners.*;
 
