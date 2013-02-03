@@ -38,7 +38,7 @@ public class PrisonSpawn
 	public static String toString(Location loc)
 	{ 
 		return loc.getWorld().getName() + " " + 
-				Math.round(loc.getY()) + " " + 
+				Math.round(loc.getX()) + " " + 
 				Math.round(loc.getY()) + " " + 
 				Math.round(loc.getZ());
 		}

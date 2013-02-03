@@ -86,6 +86,28 @@ public class PCCommand implements CommandExecutor
 			}
 		}
 		
+		/*												*
+		 * 	Handles /pc stack <name>	 <amount> <times>	*
+		 *												*/
+		else if(player != null && arg1.equals("stack"))
+		{
+			if(!(Utils.hasPermission(player, "prisoncontrol.command.stack"))) return true;
+			
+			if(arg2.equals("") || arg3.equals("") || arg4.equals(""))
+			{
+				sender.sendMessage(prefix + "Not enough arguments!");
+				return true;
+			}
+			else if(arg5.equals(""))
+			{
+				
+			}
+			else
+			{
+				
+			}
+		}
+			
 		/*								*
 		 * 	Handles /pc delspawn <name>	*
 		 *								*/
@@ -260,9 +282,10 @@ public class PCCommand implements CommandExecutor
 				player.sendMessage(prefix + "Action completed!");
 				return true;
 			}
+			// /pc region <regionname> < out | raise | lower >
 			else if(arg5.equals(""))
 			{
-				if(!(Regions.isSet("Regions" + arg2)))
+				if(!(Regions.isSet("Regions." + arg2)))
 				{
 					player.sendMessage(prefix + "That region does not exist!");
 					return true;
@@ -282,13 +305,29 @@ public class PCCommand implements CommandExecutor
 					return true;
 				
 				Location p1 = PrisonSpawn.toLocation(Regions.getString("Regions." + arg2 + ".P1"));
-				Location p2 = PrisonSpawn.toLocation(Regions.getString("Regions." + arg2 + ".P1"));
+				Location p2 = PrisonSpawn.toLocation(Regions.getString("Regions." + arg2 + ".P2"));
 				if(arg3.equalsIgnoreCase("out"))
 				{
-					p1.setX(p1.getX() + distance);
-					p1.setZ(p1.getZ() + distance);
-					p2.setX(p1.getX() + distance);
-					p2.setZ(p1.getZ() + distance);					
+					if(p1.getX() > p2.getX())
+					{
+						p1.setX(p1.getX() + distance);
+						p2.setX(p2.getX() - distance);
+					}
+					else
+					{
+						p2.setX(p2.getX() + distance);
+						p1.setX(p1.getX() - distance);
+					}
+					if(p1.getZ() > p2.getZ())
+					{
+						p1.setZ(p1.getZ() + distance);
+						p2.setZ(p2.getZ() - distance);
+					}
+					else
+					{
+						p2.setZ(p2.getZ() + distance);
+						p1.setZ(p1.getZ() - distance);
+					}				
 					
 					Regions.set("Regions." + arg2 + ".P1", PrisonSpawn.toString(p1));
 					Regions.set("Regions." + arg2 + ".P2", PrisonSpawn.toString(p2));
@@ -306,7 +345,7 @@ public class PCCommand implements CommandExecutor
 					else
 					{
 						p2.setY(p2.getY() + distance);
-						Regions.set("Regions." + arg2 + ".P2", PrisonSpawn.toString(p1));
+						Regions.set("Regions." + arg2 + ".P2", PrisonSpawn.toString(p2));
 					}
 					player.sendMessage(prefix + arg2 + " raised " + arg4 + " blocks!");
 					return true;
@@ -321,7 +360,7 @@ public class PCCommand implements CommandExecutor
 					else
 					{
 						p2.setY(p2.getY() + distance);
-						Regions.set("Regions." + arg2 + ".P2", PrisonSpawn.toString(p1));
+						Regions.set("Regions." + arg2 + ".P2", PrisonSpawn.toString(p2));
 					}
 					player.sendMessage(prefix + arg2 + " lowered " + arg4 + " blocks!");
 					return true;
