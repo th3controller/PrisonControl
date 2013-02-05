@@ -17,6 +17,7 @@ permissions:
         children:
            prisoncontrol.command.reload: true
            prisoncontrol.command.setspawn: true
+           prisoncontrol.command.stack: true
            prisoncontrol.command.delspawn: true
            prisoncontrol.command.spawn: true
            prisoncontrol.command.addowner: true
@@ -26,6 +27,9 @@ permissions:
          default: op
      prisoncontrol.command.setspawn:
          description: Allows you to set spawn points for cells!
+         default: op
+     prisoncontrol.command.stack:
+         description: Allows you to stack spawn points over and over again!
          default: op
      prisoncontrol.command.delspawn:
          description: Allows you to delete spawn points for cells!

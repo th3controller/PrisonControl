@@ -87,7 +87,7 @@ public class PCCommand implements CommandExecutor
 		}
 		
 		/*												*
-		 * 	Handles /pc stack <name>	 <amount> <times>	*
+		 * 	Handles /pc stack <name>	<times> <amount>		*
 		 *												*/
 		else if(player != null && arg1.equals("stack"))
 		{
@@ -100,11 +100,87 @@ public class PCCommand implements CommandExecutor
 			}
 			else if(arg5.equals(""))
 			{
+				if(!(Config.isSet("Prison.Spawns." + arg2)))
+				{
+					player.sendMessage(prefix + arg2 + " is now a spawnpoint!");
+					return true;
+				}
 				
+				int times;
+				int amount;
+				try
+				{ 
+					times = Integer.parseInt(arg3); 
+					amount = Integer.parseInt(arg4);
+				}
+				catch(NumberFormatException err)
+				{
+					player.sendMessage(prefix + "Arguments 3 and 4 must be a number!");
+					return true;
+				}
+				
+				// north -z south +z west -x west +z
+				int direction = 0;
+				double rotation = (player.getLocation().getYaw() - 90) % 360;
+				if(rotation < 0) rotation += 360.0;	
+				// North
+				if(67.5 <= rotation && rotation < 112.5) direction = 0;
+				// East
+				else if(157.5 <= rotation && rotation < 202.5) direction = 1;
+				// South
+				else if(247.5 <= rotation && rotation < 292.5) direction = 2;
+				// West
+				else if((0 <= rotation && rotation < 22.5) || (337.5 <= rotation && rotation < 360.0)) direction = 3;
+				else
+				{
+					player.sendMessage(prefix + "Please face North, South, East, or West!");
+					return true;
+				}
+				
+				Location prevLoc = PrisonSpawn.toLocation(Config.getString("Prison.Spawns." + arg2 + ".Spawn Location"));
+				for(int i = 1; i <= times; i++)
+				{
+					Location spawnLoc;
+					PrisonSpawn spawn;
+					switch(direction)
+					{
+						case(0):
+							spawnLoc = 
+								new Location(prevLoc.getWorld(), prevLoc.getX(), prevLoc.getY(), prevLoc.getZ() - amount);
+							spawn = new PrisonSpawn(spawnLoc);
+							break;
+						case(1):
+							spawnLoc = 
+							new Location(prevLoc.getWorld(), prevLoc.getX() + amount, prevLoc.getY(), prevLoc.getZ());
+							spawn = new PrisonSpawn(spawnLoc);
+							break;
+						case(2):
+							spawnLoc = 
+							new Location(prevLoc.getWorld(), prevLoc.getX(), prevLoc.getY(), prevLoc.getZ() + amount);
+							spawn = new PrisonSpawn(spawnLoc);
+							break;
+						case(3):
+							spawnLoc = 
+							new Location(prevLoc.getWorld(), prevLoc.getX() - amount, prevLoc.getY(), prevLoc.getZ());
+							spawn = new PrisonSpawn(spawnLoc);
+							break;
+						default:
+							player.sendMessage(
+									prefix + "Failed to loop a location! Please report issue to number1_Master immediately!");
+							return true;
+					}
+					
+					if(Config.isSet("Prison.Spawns." + arg2 + i)) continue;
+					spawn.createAt("Prison.Spawns." + arg2 + i);
+					prevLoc = spawnLoc;
+				}
+				player.sendMessage(prefix + times + " spawn points have been created!");
+				return true;
 			}
 			else
 			{
-				
+				player.sendMessage(prefix + "Too many arguments!");
+				return true;
 			}
 		}
 			
